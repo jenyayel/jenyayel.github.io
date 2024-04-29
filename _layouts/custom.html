@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: "en" }}">
+  {%- include head.html -%}
+
+    <style type="text/css" media="screen">
+        .wrapper {
+            margin: 10px auto;
+            max-width: 600px;
+            text-align: center;
+        }
+        h1 {
+            margin: 30px 0;
+            font-size: 4em;
+            line-height: 1;
+            letter-spacing: -1px;
+        }
+        footer {
+            padding: 0 0 20px;
+            text-align: center;
+        }
+        footer a, footer a:visited {
+            color: red;
+        }
+        footer a:hover {
+            text-decoration: none;
+        }
+  </style>
+  <body>
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        {{ content }}
+      </div>
+    </main>
+    <footer><a href="https://tanyay.com/">♥</a></footer>
+  </body>
+</html>
