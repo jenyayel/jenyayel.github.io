@@ -1,4 +1,8 @@
 <style id="game-style">
+  html.game-running {
+    overscroll-behavior: none;
+    overflow: hidden;
+  }
   .game-stage {
     border: 1px solid var(--minima-brand-color-dark);
     background-color: var(--minima-background-color);
@@ -95,6 +99,7 @@
       window.removeEventListener("keydown", deleteStage);
       notCanvas.removeEventListener("click", destroyStage);
       canvas.className = "game-stage destroy";
+      document.getElementsByTagName('html')[0].className = "";
       setTimeout(() => canvas.remove(), 500);
     };
     const deleteStage = (e) => e.key === "Escape" && destroyStage();
@@ -103,6 +108,7 @@
     setTimeout(() => {
       canvas.setAttribute("width", width);
       canvas.setAttribute("height", height);
+      document.getElementsByTagName('html')[0].className = "game-running";
       new SnakeGame(
         canvas,
         (e) => e === "game-over" && setTimeout(destroyStage, 2000)
