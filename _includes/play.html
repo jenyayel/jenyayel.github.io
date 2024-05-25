@@ -68,24 +68,47 @@
       width: ${width}px;
       height: ${height}px;
     }
+  }
+  .game-stage.destroy {
+    animation: fadeOut 0.5s ease forwards;
+    left: 50%;
+    top: 50%;
+    margin-left: -${Math.round(width / 2)}px;
+    margin-top: -${Math.round(height / 2)}px;
+    width: ${width}px;
+    height: ${height}px;
+  }
+  @keyframes fadeOut {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
   }`)
     );
     document.getElementsByTagName("body")[0].appendChild(canvas);
 
     // exit game handling
-    const deleteStage = (e) => {
-      if (e.key === "Escape") {
-        canvas.remove();
-        window.removeEventListener("keydown", deleteStage);
-      }
+    const notCanvas = document.body.getElementsByTagName("main")[0];
+    const destroyStage = () => {
+      window.removeEventListener("keydown", deleteStage);
+      notCanvas.removeEventListener("click", destroyStage);
+      canvas.className = "game-stage destroy";
+      setTimeout(() => canvas.remove(), 500);
     };
-    window.addEventListener("keydown", deleteStage);
+    const deleteStage = (e) => e.key === "Escape" && destroyStage();
 
     // wait animation and start
     setTimeout(() => {
       canvas.setAttribute("width", width);
       canvas.setAttribute("height", height);
-      new SnakeGame(canvas);
+      new SnakeGame(
+        canvas,
+        (e) => e === "game-over" && setTimeout(destroyStage, 2000)
+      );
+      notCanvas.addEventListener("click", destroyStage);
+      window.addEventListener("keydown", deleteStage);
     }, 300);
   };
   ((u, c) => {
