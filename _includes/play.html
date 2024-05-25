@@ -1,0 +1,120 @@
+<style id="game-style">
+  .game-stage {
+    border: 1px solid var(--minima-brand-color-dark);
+    background-color: var(--minima-background-color);
+    position: absolute;
+    box-sizing: border-box;
+    animation: stage-resize 0.3s ease-out forwards;
+  }
+  .proj-list {
+    display: table;
+    margin: 30px auto 0;
+    list-style: none;
+  }
+  .proj-list li {
+    float: left;
+    margin: 5px 10px 5px 0;
+  }
+  .proj-list li:last-of-type {
+    margin-right: 0;
+  }
+  .proj-list li a {
+    display: block;
+    padding: 5px 12px;
+    font-size: 20px;
+    border: 1px solid var(--minima-border-color-01);
+    color: var(--minima-brand-color);
+  }
+  .proj-list li a:hover {
+    border-color: var(--minima-border-color-02);
+    text-decoration: none;
+  }
+</style>
+<div>
+  <ul class="proj-list">
+    <li>
+      <a id="play-snake-game" href="">▶</a>
+    </li>
+  </ul>
+</div>
+<script>
+  let shouldStartGame = false;
+  const startGame = () => {
+    // create stage
+    const maxSqrSize = 400;
+    let { height, width } = window.visualViewport;
+    width = Math.min(width, maxSqrSize);
+    height = width < maxSqrSize ? height : width;
+
+    const canvas = document.createElement("canvas");
+    canvas.className = "game-stage";
+    canvas.appendChild(document.createTextNode(`Loading...`));
+    document.getElementById("game-style").appendChild(
+      document.createTextNode(`
+    @keyframes stage-resize {
+    0% {
+      left: 50%;
+      top: 50%;
+      margin-left: 0;
+      margin-top: 0;
+      width: 0;
+      height: 0;
+    }
+    100% {
+      left: 50%;
+      top: 50%;
+      margin-left: -${Math.round(width / 2)}px;
+      margin-top: -${Math.round(height / 2)}px;
+      width: ${width}px;
+      height: ${height}px;
+    }
+  }`)
+    );
+    document.getElementsByTagName("body")[0].appendChild(canvas);
+
+    // exit game handling
+    const deleteStage = (e) => {
+      if (e.key === "Escape") {
+        canvas.remove();
+        window.removeEventListener("keydown", deleteStage);
+      }
+    };
+    window.addEventListener("keydown", deleteStage);
+
+    // wait animation and start
+    setTimeout(() => {
+      canvas.setAttribute("width", width);
+      canvas.setAttribute("height", height);
+      new SnakeGame(canvas);
+    }, 300);
+  };
+  ((u, c) => {
+    const d = document,
+      t = "script",
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (c) {
+      o.addEventListener(
+        "load",
+        function (e) {
+          c(null, e);
+        },
+        false
+      );
+    }
+    s.parentNode.insertBefore(o, s);
+  })(
+    "https://static.jenyay.com/snake/game.js",
+    () => shouldStartGame && startGame()
+  );
+
+  document.getElementById("play-snake-game").addEventListener("click", (e) => {
+    e.preventDefault();
+    if (SnakeGame) {
+      startGame();
+    } else {
+      shouldStartGame = true;
+    }
+  });
+</script>

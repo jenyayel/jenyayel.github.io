@@ -18,11 +18,17 @@
             text-align: center;
         }
         footer a, footer a:visited {
-            color: red;
+            color: #ff7979;
             line-height: 40px;
+            animation: color-change 6s infinite ease-in-out;
         }
         footer a:hover {
             text-decoration: none;
+        }
+        @keyframes color-change {
+          0% { color: #ff7979; }
+          50% { color: var(--minima-link-base-color); }
+          100% { color: #ff7979; }
         }
   </style>
   <body>
