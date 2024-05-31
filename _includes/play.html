@@ -42,7 +42,24 @@
   </ul>
 </div>
 <script>
-  let shouldStartGame = false;
+  let gameFetched = false;
+  const fetchGame = (u, c) => {
+    const d = document,
+      t = "script",
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (c) {
+      o.addEventListener(
+        "load",
+        function (e) {
+          c(null, e);
+        },
+        false
+      );
+    }
+    s.parentNode.insertBefore(o, s);
+  };
   const startGame = () => {
     // create stage
     const maxSqrSize = 400;
@@ -99,7 +116,7 @@
       window.removeEventListener("keydown", deleteStage);
       notCanvas.removeEventListener("click", destroyStage);
       canvas.className = "game-stage destroy";
-      document.getElementsByTagName('html')[0].className = "";
+      document.getElementsByTagName("html")[0].className = "";
       setTimeout(() => canvas.remove(), 500);
     };
     const deleteStage = (e) => e.key === "Escape" && destroyStage();
@@ -108,7 +125,7 @@
     setTimeout(() => {
       canvas.setAttribute("width", width);
       canvas.setAttribute("height", height);
-      document.getElementsByTagName('html')[0].className = "game-running";
+      document.getElementsByTagName("html")[0].className = "game-running";
       new SnakeGame(
         canvas,
         (e) => e === "game-over" && setTimeout(destroyStage, 2000)
@@ -117,33 +134,18 @@
       window.addEventListener("keydown", deleteStage);
     }, 300);
   };
-  ((u, c) => {
-    const d = document,
-      t = "script",
-      o = d.createElement(t),
-      s = d.getElementsByTagName(t)[0];
-    o.src = u;
-    if (c) {
-      o.addEventListener(
-        "load",
-        function (e) {
-          c(null, e);
-        },
-        false
-      );
-    }
-    s.parentNode.insertBefore(o, s);
-  })(
-    "https://static.jenyay.com/snake/game.js",
-    () => shouldStartGame && startGame()
-  );
 
   document.getElementById("play-snake-game").addEventListener("click", (e) => {
     e.preventDefault();
-    if (SnakeGame) {
-      startGame();
+    if (!gameFetched) {
+      const old = e.target.innerHTML;
+      e.target.innerHTML = "⧗";
+      fetchGame("https://static.jenyay.com/snake/game.js", () => {
+        startGame();
+        e.target.innerHTML = old;
+      });
     } else {
-      shouldStartGame = true;
+      startGame();
     }
   });
 </script>
