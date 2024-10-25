@@ -23,3 +23,4 @@ minima:
     - { platform: linkedin,       user_url: "https://www.linkedin.com/profile/view?id=ADEAAADeW6sBW4Oz_qQmXiOwGu38dnTj4AXpD6g" }
     - { platform: stackoverflow,  user_url: "https://stackoverflow.com/users/2307459/jenya-y" }
     - { platform: twitter,        user_url: "https://twitter.com/jenyaye" }
+    - { platform: instagram,      user_url: "https://www.instagram.com/jenyayel" }
