@@ -21,10 +21,25 @@
         footer {
             text-align: center;
         }
+        footer a {
+          line-height: 40px;
+        }
+        @media screen and (orientation:portrait) {
+            footer a {
+              line-height: normal;
+              display: block;
+              margin: 5px auto 55px;
+          }
+        }
         footer a, footer a:visited {
             color: #ff7979;
-            line-height: 40px;
             animation: color-change 6s infinite ease-in-out;
+        }
+        @media screen and (orientation:portrait) {
+            footer a, footer a:visited {
+              color: var(--minima-border-color-01);
+              animation: none;
+          }
         }
         footer a:hover {
             text-decoration: none;
