@@ -10,6 +10,9 @@
     box-sizing: border-box;
     animation: stage-resize 0.3s ease-out forwards;
   }
+  #play-snake-root {
+    display: none;
+  }
   .proj-list {
     display: table;
     margin: 30px auto 0;
@@ -34,7 +37,7 @@
     text-decoration: none;
   }
 </style>
-<div>
+<div id="play-snake-root">
   <ul class="proj-list">
     <li>
       <a id="play-snake-game" href="">▶</a>
@@ -42,6 +45,11 @@
   </ul>
 </div>
 <script>
+  const canPlayGame = !Boolean(
+    "ontouchstart" in window ||
+      navigator.maxTouchPoints > 0 ||
+      navigator.msMaxTouchPoints > 0
+  );
   let gameFetched = false;
   const fetchGame = (u, c) => {
     const d = document,
@@ -135,17 +143,22 @@
     }, 300);
   };
 
-  document.getElementById("play-snake-game").addEventListener("click", (e) => {
-    e.preventDefault();
-    if (!gameFetched) {
-      const old = e.target.innerHTML;
-      e.target.innerHTML = "⧗";
-      fetchGame("https://static.jenyay.com/snake/game.js", () => {
-        startGame();
-        e.target.innerHTML = old;
+  if (canPlayGame) {
+    document.getElementById("play-snake-root").style.display = "block";
+    document
+      .getElementById("play-snake-game")
+      .addEventListener("click", (e) => {
+        e.preventDefault();
+        if (!gameFetched) {
+          const old = e.target.innerHTML;
+          e.target.innerHTML = "⧗";
+          fetchGame("https://static.jenyay.com/snake/game.js", () => {
+            startGame();
+            e.target.innerHTML = old;
+          });
+        } else {
+          startGame();
+        }
       });
-    } else {
-      startGame();
-    }
-  });
+  }
 </script>
