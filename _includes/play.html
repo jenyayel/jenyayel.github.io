@@ -10,9 +10,6 @@
     box-sizing: border-box;
     animation: stage-resize 0.3s ease-out forwards;
   }
-  #play-snake-root {
-    display: none;
-  }
   .proj-list {
     display: table;
     margin: 30px auto 0;
@@ -37,7 +34,7 @@
     text-decoration: none;
   }
 </style>
-<div id="play-snake-root">
+<div>
   <ul class="proj-list">
     <li>
       <a id="play-snake-game" href="">▶</a>
@@ -136,29 +133,26 @@
       document.getElementsByTagName("html")[0].className = "game-running";
       new SnakeGame(
         canvas,
-        (e) => e === "game-over" && setTimeout(destroyStage, 2000)
+        (e) => e === "game-over" && setTimeout(destroyStage, 2000),
+        20,
+        !canPlayGame // demo mode
       );
       notCanvas.addEventListener("click", destroyStage);
       window.addEventListener("keydown", deleteStage);
     }, 300);
   };
 
-  if (canPlayGame) {
-    document.getElementById("play-snake-root").style.display = "block";
-    document
-      .getElementById("play-snake-game")
-      .addEventListener("click", (e) => {
-        e.preventDefault();
-        if (!gameFetched) {
-          const old = e.target.innerHTML;
-          e.target.innerHTML = "⧗";
-          fetchGame("https://static.jenyay.com/snake/game.js", () => {
-            startGame();
-            e.target.innerHTML = old;
-          });
-        } else {
-          startGame();
-        }
+  document.getElementById("play-snake-game").addEventListener("click", (e) => {
+    e.preventDefault();
+    if (!gameFetched) {
+      const old = e.target.innerHTML;
+      e.target.innerHTML = "⧗";
+      fetchGame("https://static.jenyay.com/snake/game.js?v=0.0.6", () => {
+        startGame();
+        e.target.innerHTML = old;
       });
-  }
+    } else {
+      startGame();
+    }
+  });
 </script>
