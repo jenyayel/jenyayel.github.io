@@ -75,6 +75,7 @@
     const canvas = document.createElement("canvas");
     canvas.className = "game-stage";
     canvas.appendChild(document.createTextNode(`Loading...`));
+    document.getElementsByTagName("html")[0].className = "game-starting";
     document.getElementById("game-style").appendChild(
       document.createTextNode(`
     @keyframes stage-resize {
@@ -104,6 +105,10 @@
     width: ${width}px;
     height: ${height}px;
   }
+  html.game-running .gravatar, html.game-starting .gravatar {
+    animation: fadeOut 0.3s ease forwards;
+    opacity: 0.1;
+  }
   @keyframes fadeOut {
     0% {
       opacity: 1;
@@ -123,6 +128,7 @@
       canvas.className = "game-stage destroy";
       document.getElementsByTagName("html")[0].className = "";
       setTimeout(() => canvas.remove(), 500);
+      ScreenLockPrevention.disableScreenLock();
     };
     const deleteStage = (e) => e.key === "Escape" && destroyStage();
 
@@ -139,6 +145,7 @@
       );
       notCanvas.addEventListener("click", destroyStage);
       window.addEventListener("keydown", deleteStage);
+      ScreenLockPrevention.enableScreenLock();
     }, 300);
   };
 
@@ -155,4 +162,73 @@
       startGame();
     }
   });
+
+  const ScreenLockPrevention = (() => {
+    let video;
+
+    function createVideoElement() {
+      video = document.createElement("video");
+      video.setAttribute("loop", "");
+      video.setAttribute(
+        "style",
+        "position: fixed; top: -100px; left: -100px; width: 1px; height: 1px;"
+      ); // Hidden off-screen
+
+      addSourceToVideo(
+        video,
+        "webm",
+        base64(
+          "video/webm",
+          "GkXfo0AgQoaBAUL3gQFC8oEEQvOBCEKCQAR3ZWJtQoeBAkKFgQIYU4BnQI0VSalmQCgq17FAAw9CQE2AQAZ3aGFtbXlXQUAGd2hhbW15RIlACECPQAAAAAAAFlSua0AxrkAu14EBY8WBAZyBACK1nEADdW5khkAFVl9WUDglhohAA1ZQOIOBAeBABrCBCLqBCB9DtnVAIueBAKNAHIEAAIAwAQCdASoIAAgAAUAmJaQAA3AA/vz0AAA="
+        )
+      );
+      addSourceToVideo(
+        video,
+        "mp4",
+        base64(
+          "video/mp4",
+          "AAAAHGZ0eXBpc29tAAACAGlzb21pc28ybXA0MQAAAAhmcmVlAAAAG21kYXQAAAGzABAHAAABthADAowdbb9/AAAC6W1vb3YAAABsbXZoZAAAAAB8JbCAfCWwgAAAA+gAAAAAAAEAAAEAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAIVdHJhawAAAFx0a2hkAAAAD3wlsIB8JbCAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAIAAAACAAAAAABsW1kaWEAAAAgbWRoZAAAAAB8JbCAfCWwgAAAA+gAAAAAVcQAAAAAAC1oZGxyAAAAAAAAAAB2aWRlAAAAAAAAAAAAAAAAVmlkZW9IYW5kbGVyAAAAAVxtaW5mAAAAFHZtaGQAAAABAAAAAAAAAAAAAAAkZGluZgAAABxkcmVmAAAAAAAAAAEAAAAMdXJsIAAAAAEAAAEcc3RibAAAALhzdHNkAAAAAAAAAAEAAACobXA0dgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAIAAgASAAAAEgAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABj//wAAAFJlc2RzAAAAAANEAAEABDwgEQAAAAADDUAAAAAABS0AAAGwAQAAAbWJEwAAAQAAAAEgAMSNiB9FAEQBFGMAAAGyTGF2YzUyLjg3LjQGAQIAAAAYc3R0cwAAAAAAAAABAAAAAQAAAAAAAAAcc3RzYwAAAAAAAAABAAAAAQAAAAEAAAABAAAAFHN0c3oAAAAAAAAAEwAAAAEAAAAUc3RjbwAAAAAAAAABAAAALAAAAGB1ZHRhAAAAWG1ldGEAAAAAAAAAIWhkbHIAAAAAAAAAAG1kaXJhcHBsAAAAAAAAAAAAAAAAK2lsc3QAAAAjqXRvbwAAABtkYXRhAAAAAQAAAABMYXZmNTIuNzguMw=="
+        )
+      );
+
+      document.body.appendChild(video);
+    }
+
+    function addSourceToVideo(element, type, dataURI) {
+      const source = document.createElement("source");
+      source.src = dataURI;
+      source.type = "video/" + type;
+      element.appendChild(source);
+    }
+
+    function base64(mimeType, base64String) {
+      return `data:${mimeType};base64,${base64String}`;
+    }
+
+    function enableScreenLock() {
+      if (!video) {
+        createVideoElement();
+      }
+
+      const playFn = () => {
+        video.play().catch((err) => console.log("Auto-play blocked:", err));
+        document.body.removeEventListener("touchend", playFn);
+      };
+
+      document.body.addEventListener("touchend", playFn);
+    }
+
+    function disableScreenLock() {
+      if (video) {
+        video.pause();
+        video.remove();
+        video = null;
+      }
+    }
+
+    return {
+      enableScreenLock,
+      disableScreenLock,
+    };
+  })();
 </script>
