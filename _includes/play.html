@@ -154,7 +154,7 @@
     if (!gameFetched) {
       const old = e.target.innerHTML;
       e.target.innerHTML = "⧗";
-      fetchGame("https://static.jenyay.com/snake/game.js?v=0.0.6", () => {
+      fetchGame("https://static.jenyay.com/snake/game.js?v=0.0.7", () => {
         startGame();
         e.target.innerHTML = old;
       });
