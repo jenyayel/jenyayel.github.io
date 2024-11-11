@@ -211,11 +211,13 @@
       }
 
       const playFn = () => {
-        video.play().catch((err) => console.log("Auto-play blocked:", err));
-        document.body.removeEventListener("touchend", playFn);
+        video
+          .play()
+          .then((p) => console.log("Playing", p))
+          .catch((err) => console.log("Auto-play blocked:", err));
       };
 
-      document.body.addEventListener("touchend", playFn);
+      playFn();
     }
 
     function disableScreenLock() {
